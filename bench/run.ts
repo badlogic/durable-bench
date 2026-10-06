@@ -1,8 +1,7 @@
-import { appendFileSync, cpSync, mkdirSync, mkdtempSync, rmSync } from "node:fs"
-import { loadavg, tmpdir } from "node:os"
-import { join } from "node:path"
+import { appendFileSync, mkdirSync, rmSync } from "node:fs"
+import { loadavg } from "node:os"
 import { MEASURED_TOOLS, turn, type Stats } from "../src/plan.ts"
-import { call, CPU_MAX, fixture, MEASURED_TURNS, prepare, quiet, rss, SAMPLES, SIZES, start, target, TARGETS } from "./targets.ts"
+import { call, CPU_MAX, MEASURED_TURNS, prepare, quiet, rss, SAMPLES, SIZES, stage, start, target, TARGETS } from "./targets.ts"
 
 const name = target(process.argv[2])
 const sizes = process.argv.length > 3 ? process.argv.slice(3).map(Number) : SIZES
@@ -14,8 +13,7 @@ mkdirSync("results", { recursive: true })
 
 for (const size of sizes) {
   for (let sample = 0; sample < samples; sample++) {
-    const dir = mkdtempSync(join(tmpdir(), "durable-bench-"))
-    cpSync(fixture(name, size), dir, { recursive: true })
+    const dir = stage(name, size)
     const cpu = await quiet(cpuMax)
     const load = loadavg()[0]
     let at = performance.now()

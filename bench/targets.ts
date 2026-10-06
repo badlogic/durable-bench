@@ -1,7 +1,8 @@
 import { execFileSync } from "node:child_process"
-import { readFileSync } from "node:fs"
+import { cpSync, mkdtempSync, readdirSync, readFileSync } from "node:fs"
 import { builtinModules } from "node:module"
-import { cpus } from "node:os"
+import { cpus, tmpdir } from "node:os"
+import { join } from "node:path"
 import { createInterface } from "node:readline"
 import type { Readable } from "node:stream"
 import { setTimeout as sleep } from "node:timers/promises"
@@ -30,6 +31,13 @@ export const target = (name: string | undefined) => {
 
 export const fixture = (name: Target, turns: number) => `fixtures/${name}-${turns}`
 
+export function stage(name: Target, turns: number) {
+  const dir = mkdtempSync(join(tmpdir(), "durable-bench-"))
+  cpSync(fixture(name, turns), dir, { recursive: true })
+  for (const file of readdirSync(dir, { recursive: true, withFileTypes: true })) if (file.isFile()) readFileSync(join(file.parentPath, file.name))
+  return dir
+}
+
 const bundles = new Map<Target, Promise<string>>()
 
 const bundle = (name: Target) => bundles.get(name) ?? bundles.set(name, (async () => {
@@ -54,7 +62,7 @@ export async function start(name: Target, persist: string) {
     durableObjects: Object.fromEntries(Object.entries(TARGETS[name].objects).map(([binding, className]) => [binding, { className, useSQLite: true }])),
     durableObjectsPersist: persist,
     handleRuntimeStdio: (stdout: Readable, stderr: Readable) => {
-      stdout.pipe(process.stdout)
+      stdout.on("data", chunk => process.stdout.write(chunk))
       createInterface({ input: stderr }).on("line", line => { if (!line.includes("NOSENTRY")) process.stderr.write(`${line}\n`) })
     },
   })
