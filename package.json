@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "seed": "node bench/seed.ts",
-    "bench": "node bench/run.ts",
-    "report": "node bench/report.ts",
+    "seed": "bun bench/seed.ts",
+    "bench": "bun bench/run.ts",
+    "report": "bun bench/report.ts",
     "check": "tsc -p . && tsc -p bench"
   },
   "dependencies": {
@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20261006.1",
-    "@types/node": "24.19.1",
+    "@types/bun": "1.4.2",
     "esbuild": "0.28.2",
     "miniflare": "4.20260730.0",
     "typescript": "7.0.2"
