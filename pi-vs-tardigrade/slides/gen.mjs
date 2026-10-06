@@ -227,13 +227,13 @@ slides.push(
 			</ul>
 		</div>
 		<div class="panel col" style="border-color:${C.pi}55">
-			<div style="font-size:28px;font-weight:800" class="pi">pi-durable: records in transactions</div>
-			<div style="font-size:20px" class="muted">Transcript entries and typed documents, committed atomically.</div>
+			<div style="font-size:28px;font-weight:800" class="pi">pi-durable: records and documents</div>
+			<div style="font-size:20px" class="muted">Immutable transcript entries plus small typed documents, committed atomically.</div>
 			<ul>
 				<li>History stays on disk. Only an active conversation's model context is held in memory.</li>
-				<li>A commit writes only what changed: constant cost, however long the conversation.</li>
-				<li>No snapshots to rewrite: storage grows with the transcript, not faster.</li>
-				<li>Cold open reads lazily: there is no event log to replay.</li>
+				<li>Documents keep an operation log of small deltas, folded into a new base by policy; "latest" documents drop their history.</li>
+				<li>A commit writes the new entries and deltas: constant cost, however long the conversation.</li>
+				<li>Cold open reads the context and each document's latest base plus the deltas after it. No full-state snapshot.</li>
 			</ul>
 		</div>
 	</div>`,
