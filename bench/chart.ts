@@ -7,7 +7,7 @@ const PANEL = { w: 600, h: 400, top: 60 }
 const PAD = { left: 64, right: 32, top: 52, bottom: 48 }
 const INK = { primary: "#0b0b0b", secondary: "#52514e", muted: "#8a8984", grid: "#e8e7e4", surface: "#fcfcfb" }
 const SERIES = ["#2a78d6", "#eb6834"]
-const NAMES: Record<string, string> = { pi: "pi-durable", tardie: "tardie" }
+const NAMES: Record<string, string> = { pi: "pi-durable", "pi-head": "pi-durable", tardie: "tardie" }
 
 const name = (label: string) => `${NAMES[label.split(" ")[0]!] ?? label.split(" ")[0]} ${label.split(" ")[1]}`
 const fmt = (n: number) => Math.round(n).toLocaleString("en-US")

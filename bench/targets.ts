@@ -6,7 +6,7 @@ import { join } from "node:path"
 import { createInterface } from "node:readline"
 import type { Readable } from "node:stream"
 import { setTimeout as sleep } from "node:timers/promises"
-import { build } from "esbuild"
+import { build, type Plugin } from "esbuild"
 import { Miniflare } from "miniflare"
 
 export const SIZES = [50, 250, 1000, 3500]
@@ -17,9 +17,39 @@ export const CPU_WINDOW_MS = 1000
 
 const version = (name: string) => JSON.parse(readFileSync(`node_modules/${name}/package.json`, "utf8")).version as string
 
+// A pi checkout to build pi-durable, pi-ai, and chord from source for the "pi-head" target.
+const PI_SOURCE = process.env.PI_SOURCE ?? "../pi"
+
 export const TARGETS = {
   pi: { entry: "src/pi.ts", objects: { PI: "PiDO" }, version: version("@earendil-works/pi-durable") },
+  "pi-head": { entry: "src/pi-head.ts", objects: { PI: "PiDO" }, version: process.env.PI_HEAD_VERSION ?? "head" },
   tardie: { entry: "src/tardie.ts", objects: { ACTORS: "ActorDO", THREADS: "ThreadDO" }, version: version("tardie") },
+}
+
+// Resolves @earendil-works packages to the TypeScript sources of the pi checkout through their export maps.
+const fromSource: Plugin = {
+  name: "pi-source",
+  setup(b) {
+    const dirs: Record<string, string> = { "pi-durable": "durable", "pi-ai": "ai", chord: "chord" }
+    b.onResolve({ filter: /^@earendil-works\/(pi-durable|pi-ai|chord)(\/.*)?$/ }, args => {
+      const [, pkg, sub = ""] = /^@earendil-works\/([^/]+)(\/.*)?$/.exec(args.path)!
+      const root = join(process.cwd(), PI_SOURCE, "packages", dirs[pkg!]!)
+      const exports = JSON.parse(readFileSync(join(root, "package.json"), "utf8")).exports as Record<string, unknown>
+      const key = "." + sub
+      let entry = exports[key]
+      let star = ""
+      if (entry === undefined) {
+        const pattern = Object.keys(exports).find(k => k.endsWith("*") && key.startsWith(k.slice(0, -1)))
+        if (!pattern) throw new Error("No export " + key + " in " + pkg)
+        star = key.slice(pattern.length - 1)
+        entry = exports[pattern]
+      }
+      const conditions = entry as { source?: string; import?: string }
+      const target = typeof entry === "string" ? entry : (conditions.source ?? conditions.import!)
+      const file = target.replace("*", star).replace(/^\.\/dist\/(.*)\.js$/, "./src/$1.ts")
+      return { path: join(root, file) }
+    })
+  },
 }
 
 export type Target = keyof typeof TARGETS
@@ -46,6 +76,7 @@ const bundle = (name: Target) => bundles.get(name) ?? bundles.set(name, (async (
     entryPoints: [TARGETS[name].entry], outfile, bundle: true, format: "esm", platform: "neutral", target: "es2024",
     conditions: ["workerd", "worker", "browser", "import"], mainFields: ["module", "main"],
     external: ["cloudflare:*", "node:*", ...builtinModules], logLevel: "error",
+    plugins: name === "pi-head" ? [fromSource] : [],
   })
   return outfile
 })()).get(name)!
