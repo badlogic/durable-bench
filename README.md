@@ -2,7 +2,7 @@
 
 A comparison of [`pi-durable`](https://github.com/earendil-works/pi-durable) and [`tardigrade`](https://github.com/tardigrade-dev/tardigrade) on SQLite-backed Cloudflare Durable Objects, running locally with Miniflare. It compares warm and cold threads across conversation sizes, measuring response latency, SQLite storage growth, startup and open time, memory use, and CPU load. Both targets use the same scripted model and tool.
 
-Sample run on a MacBook Air (Apple M5, 10 cores, 32 GB RAM, macOS 26.6.2). Lower is better; each bar is roughly 50 ms.
+Sample run on a MacBook Air (Apple M5, 10 cores, 32 GB RAM, macOS 26.6.2).
 
 ```text
 response latency (ms)            pi-durable              tardigrade
