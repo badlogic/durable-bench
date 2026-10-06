@@ -1,0 +1,25 @@
+{
+  "name": "durable-bench",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "seed": "node bench/seed.ts",
+    "bench": "node bench/run.ts",
+    "report": "node bench/report.ts",
+    "check": "tsc -p . && tsc -p bench"
+  },
+  "dependencies": {
+    "@earendil-works/chord": "1.0.4",
+    "@earendil-works/pi-ai": "1.0.4",
+    "@earendil-works/pi-durable": "1.0.4",
+    "effect": "4.0.0-rc.115",
+    "tardie": "0.44.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261006.1",
+    "@types/node": "24.19.1",
+    "esbuild": "0.28.2",
+    "miniflare": "4.20260730.0",
+    "typescript": "7.0.2"
+  }
+}
