@@ -17,6 +17,8 @@ turns                        cold       warm         cold           warm
 
 This fork adds a `pi-head` target: the same benchmark agent (`src/pi-head.ts`) with `pi-durable`, `pi-ai`, and `chord` built from the TypeScript sources of a pi checkout (`PI_SOURCE`, default `../pi`; label it with `PI_HEAD_VERSION`). It opens storage with pi-durable's own Durable Object adapter, `openDurableObjectSqliteStorage(ctx.storage)`, instead of the hand-written facade in `src/pi.ts`. Everything else (scripted model, tool, turns, sizes, measurements) is unchanged.
 
+Results and slides comparing Tardigrade with pi-durable are in [`pi-vs-tardigrade/`](pi-vs-tardigrade). A second benchmark outside of Durable Objects, covering commit latency, reopen, memory, and versioning, is in [`harness/`](harness).
+
 ```sh
 PI_SOURCE=../pi PI_HEAD_VERSION=$(git -C ../pi rev-parse --short HEAD) bun run seed pi-head
 PI_SOURCE=../pi PI_HEAD_VERSION=$(git -C ../pi rev-parse --short HEAD) bun run bench pi-head
