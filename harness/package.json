@@ -1,0 +1,24 @@
+{
+  "name": "durable-harness-bench",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Apples-to-apples benchmark: Tardigrade (tardie) vs Pi Durable",
+  "scripts": {
+    "bench": "bash scripts/bench.sh all",
+    "smoke": "bash scripts/bench.sh smoke node && bash scripts/bench.sh smoke bun",
+    "build": "node scripts/build.mjs && bun scripts/build-bun.ts",
+    "charts": "node scripts/charts.mjs"
+  },
+  "dependencies": {
+    "@earendil-works/chord": "1.0.4",
+    "@earendil-works/pi-ai": "1.0.4",
+    "@earendil-works/pi-durable": "1.0.4",
+    "@effect/sql-sqlite-bun": "4.0.0-rc.115",
+    "effect": "4.0.0-rc.115",
+    "tardie": "0.44.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

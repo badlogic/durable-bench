@@ -17,7 +17,7 @@ Building the 3,500-turn history: 34 s (pi-durable) vs 139 s (Tardigrade 0.44.0).
 
 - `slides/png/`: the slides. `slides/gen.mjs` renders them from `data/` (`node gen.mjs`, then `shoot.sh`, which uses Docker and the Chromium of the Playwright image).
 - `data/durable-bench-*.jsonl`: raw results of this benchmark, including an earlier run of pi-durable 1.0.4 on the same host.
-- `data/harness-pi-head-vs-tardie.jsonl`: raw results of our second benchmark (Node 24, same pi-durable commit vs tardie 0.44.0): warm turns, commit latency, reopen, memory, and the versioning matrix. `harness-run.sh` is the command used.
+- `data/harness-pi-head-vs-tardie.jsonl`: raw results of our second benchmark, in [`../harness`](../harness) (Node 24, same pi-durable commit vs tardie 0.44.0): warm turns, commit latency, reopen, memory, and the versioning matrix. [`../harness/run-pi-vs-tardie.sh`](../harness/run-pi-vs-tardie.sh) is the command used.
 
 Reproduce the main benchmark from the repository root, with a pi checkout next to it:
 

@@ -1,5 +1,6 @@
 #!/bin/bash
-# durable-harness-bench (image dhb-bench) against the local pi checkout: Node, tardie vs pi-head only.
+# The published run: inside the image built from this directory's Dockerfile, with the pi checkout mounted at /pi-head,
+# its commit in /bench/pi-head.sha, and /out mounted to receive results/. Node, tardie vs pi-head only.
 set -uo pipefail
 cd /bench
 rm -rf results work dist
